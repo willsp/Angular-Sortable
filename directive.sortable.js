@@ -8,7 +8,7 @@
             scope: {
                 container: '=pwSortable',
                 reference: '=',
-                direction: '='
+                direction: '@'
             },
             controller: function($scope, $element) {
                 var me = this;
@@ -69,8 +69,10 @@
                     var cont = $scope.container;
                     var ref = $scope.reference;
                     var insertAt = [].indexOf.call($element.parent().children(), $element[0]);
-                    cont.splice(cont.indexOf(ref), 1);
-                    cont.splice(insertAt, 0, ref);
+                    $scope.$apply(function() {
+                        cont.splice(cont.indexOf(ref), 1);
+                        cont.splice(insertAt, 0, ref);
+                    });
 
                     $element.removeAttr('style');
                     $document.unbind('mousemove', me.mousemove);
