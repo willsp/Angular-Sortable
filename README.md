@@ -3,7 +3,7 @@ Angular-Sortable
 
 A UI sortable directive for Angular
 
-You can see it implemented in the [github pages site](http://willsp.github.io/Angular-Sortable/)
+You can see it implemented in the [Angular-Sortable gh-pages site](http://willsp.github.io/Angular-Sortable)
 
 It works with Internet Explorer 9 or later. Only angularjs 1.2.2 required. No other
 frameworks or libraries.
