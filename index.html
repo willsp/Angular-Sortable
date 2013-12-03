@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Sortable</title>
+    <link type="text/css" rel="stylesheet" href="style.css">
+</head>
+<body ng-controller="myCtrl">
+    <header>
+        <h1>Angular Sortable</h1>
+    </header>
+    <h2>Vertical Orientation (typical)</h2>
+    <p>Reorder the planets into the correct order</p>
+    <p>{{incorrect}} planets in the incorrect position</p>
+    <ul>
+        <li ng-repeat="planet in solarSystem" pw-sortable="solarSystem" reference="planet" pw-handle>{{planet}}</li>
+    </ul>
+    <div ng-show="incorrect === 0">
+        <p>You did it!!!</p>
+    </div>
+    <h2>Horizontal Orientation</h2>
+    <p>Reorder the letters into the correct order</p>
+    <p>{{hincorrect}} letters in the incorrect position</p>
+    <ul>
+        <li ng-repeat="letter in horizontal" pw-sortable="horizontal" reference="letter" pw-handle class="horizontal" direction="horizontal">{{letter}}</li>
+    </ul>
+    <div ng-show="hincorrect === 0">
+        <p>You did it!!!</p>
+    </div>
+    <script src="angular.js"></script>
+    <script src="controller.js"></script>
+    <script src="directive.sortable.js"></script>
+</body>
+</html>

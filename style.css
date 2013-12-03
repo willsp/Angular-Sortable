@@ -1,0 +1,24 @@
+body {
+    color: #111111;
+    margin: 0 auto;
+    max-width: 700px;
+    width: 80%;
+}
+header {
+    text-align: center;
+}
+ul {
+    background-color: #EFEFEF;
+    padding: .5em;
+    text-align: left;
+}
+li {
+    background-color: #FFFFFF;
+    list-style-type: none;
+    margin: .25em;
+    padding: 1em;
+}
+.horizontal {
+    display: inline-block;
+}
+
