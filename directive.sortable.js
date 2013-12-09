@@ -3,127 +3,163 @@
 (function() {
     'use strict';
 
-    var app = window.angularModule;
+    angular.module('willsp.pwSortable',[])
 
-    app.directive('pwSortable', function($document) {
+    .directive('pwSortable', function($document) {
         return {
             scope: {
-                container: '=pwSortable',
-                reference: '=',
-                direction: '@'
+                ngRepeat: '@',
+                pwSortable: '@'
             },
             controller: function($scope, $element) {
+                var direction = $scope.pwSortable;
+
+                // Not ngRepeat
                 var me = this;
-                var horizontal = this.horizontal = $scope.direction === 'horizontal';
+                var horizontal = this.horizontal = direction === 'horizontal';
                 this.plane = {};
                 this.element = $element;
 
+
                 this.mousemove = function mousemove(e) {
-                    var plane = me.plane;
-                    var orient = plane.orientation;
-                    var parent = $element.parent();
-                    var siblings = parent.children();
-                    var next = $element.next();
-                    var previous, offset;
+                    $scope.$apply(function() {
+                        var plane = me.plane;
+                        var orient = plane.orientation;
+                        var parent = $element.parent();
+                        var siblings = parent.children();
+                        var next = $element.next();
+                        var previous, offset, preprevious;
 
-                    plane[orient] = e['page' + orient] - plane['start' + orient];
-                    $element.css(plane.cssProp, plane[orient] + 'px');
-                    
-                    // Get the previous sibling
-                    for (var i = 0, max = siblings.length; i < max; i++) {
-                        if (siblings[i] !== $element[0]) {
-                            previous = angular.element(siblings[i]);
-                        } else {
-                            break;
-                        }
-                    }
-
-                    // Check top current vs offsetTop of neighbors
-                    if (next.length && $element[0][plane.offset] > next[0][plane.offset]) {
-                        if (previous) {
-                            previous.after(next);
-                        } else {
-                            parent.prepend(next);
-                        }
-
-                        // correct for moving elements...
-                        offset = next[0][plane.dimension] +
-                            parseInt(window.getComputedStyle(next[0])[plane.margin1], 10) +
-                            parseInt(window.getComputedStyle(next[0])[plane.margin2], 10);
-                        plane[orient] = plane[orient] - offset;
-                        plane['start' + orient] = plane['start' + orient] + offset;
+                        plane[orient] = e['page' + orient] - plane['start' + orient];
                         $element.css(plane.cssProp, plane[orient] + 'px');
 
-                    } else if (previous && $element[0][plane.offset] < previous[0][plane.offset]) {
-                        $element.after(previous);
+                        // Get the previous sibling
+                        for (var i = 0, max = siblings.length; i < max; i++) {
+                            if (siblings[i] !== $element[0]) {
+                                preprevious = previous;
+                                previous = angular.element(siblings[i]);
+                            } else {
+                                break;
+                            }
+                        }
 
-                        // correct for moving elements...
-                        offset = previous[0][plane.dimension] +
-                            parseInt(window.getComputedStyle(previous[0])[plane.margin1], 10) +
-                            parseInt(window.getComputedStyle(previous[0])[plane.margin2], 10);
-                        plane[orient] = plane[orient] + offset;
-                        plane['start' + orient] = plane['start' + orient] - offset;
-                        $element.css(plane.cssProp, plane[orient] + 'px');
-                    }
+                        // Check top current vs offsetTop of neighbors
+                        if (next.length && $element[0][plane.offset] > next[0][plane.offset]) {
+                            next.after($element);
+
+                            // correct for moving elements...
+                            offset = next[0][plane.dimension] +
+                                parseInt(window.getComputedStyle(next[0])[plane.margin1], 10) +
+                                parseInt(window.getComputedStyle(next[0])[plane.margin2], 10);
+                            plane[orient] = plane[orient] - offset;
+                            plane['start' + orient] = plane['start' + orient] + offset;
+                            $element.css(plane.cssProp, plane[orient] + 'px');
+
+                        } else if (previous && $element[0][plane.offset] < previous[0][plane.offset]) {
+                            if (preprevious) {
+                                preprevious.after($element);
+                            } else {
+                                parent.prepend($element);
+                            }
+
+                            // correct for moving elements...
+                            offset = previous[0][plane.dimension] +
+                                parseInt(window.getComputedStyle(previous[0])[plane.margin1], 10) +
+                                parseInt(window.getComputedStyle(previous[0])[plane.margin2], 10);
+                            plane[orient] = plane[orient] + offset;
+                            plane['start' + orient] = plane['start' + orient] - offset;
+                            $element.css(plane.cssProp, plane[orient] + 'px');
+                        }
+                    });
                 };
 
                 this.mouseup = function mouseup(e) {
-                    var cont = $scope.container;
-                    var ref = $scope.reference;
-                    var insertAt = [].indexOf.call($element.parent().children(), $element[0]);
-
                     $scope.$apply(function() {
-                        cont.splice(cont.indexOf(ref), 1);
-                        cont.splice(insertAt, 0, ref);
-                        $element.removeAttr('style');
-                    });
+                        // Get the vars from the repeat
+                        var expression = $scope.ngRepeat;
+                        var match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/);
 
-                    $document.unbind('mousemove', me.mousemove);
-                    $document.unbind('mouseup', me.mouseup);
+                        var lhs = match[1];
+                        var rhs = match[2];
+                        var repeatScope = $scope.$parent;
+                        var cont = repeatScope[rhs];
+                        var ref = repeatScope[lhs];
+                        var ph = me.placeholder;
+
+                        var family = $element.parent().children();
+                        var phPos = [].indexOf.call(family, ph[0]);
+                        var elPos = [].indexOf.call(family, $element[0]);
+
+                        elPos = (elPos > phPos) ? elPos - 1 : elPos;
+
+                        cont.splice(cont.indexOf(ref), 1);
+                        cont.splice(elPos, 0, ref);
+                        $element.css('position', '');
+                        $element.css(me.plane.cssProp, '');
+                            
+                        ph.after($element);
+                        ph.remove();
+
+                        $document.unbind('mousemove', me.mousemove);
+                        $document.unbind('mouseup', me.mouseup);
+                    });
                 };
             }
         };
-    });
+    })
 
-    app.directive('pwHandle', function($document) {
+    .directive('pwHandle', function($document) {
         return {
             require: '^pwSortable',
-            link: function(scope, element, attrs, sortCtrl) {
+            link: function(scope, element, attr, sortCtrl) {
 
                 element.on('mousedown', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
+                    scope.$apply(function() {
+                        e.stopPropagation();
+                        e.preventDefault();
 
-                    var plane;
-                    var horizontal = sortCtrl.horizontal;
-                    var sortable = sortCtrl.element;
+                        var plane;
+                        var horizontal = sortCtrl.horizontal;
+                        var sortable = sortCtrl.element;
+                        var ph = sortCtrl.placeholder = sortable.clone();
+                        sortable.after(ph);
 
-                    sortable.css({
-                        position: 'relative'
+                        ph.css({
+                            border: 0,
+                            height: 0,
+                            margin: 0,
+                            overflow: 'hidden',
+                            padding: 0,
+                            visibility: 'hidden',
+                            width: 0
+                        });
+
+                        sortable.css({
+                            position: 'relative'
+                        });
+
+                        sortCtrl.plane = {
+                            X: 0,
+                            Y: 0,
+                            startX: 0,
+                            startY: 0,
+                            orientation: (horizontal) ? 'X' : 'Y',
+                            cssProp: (horizontal) ? 'left' : 'top',
+                            offset: (horizontal) ? 'offsetLeft' : 'offsetTop',
+                            dimension: (horizontal) ? 'offsetWidth' : 'offsetHeight',
+                            margin1: (horizontal) ? 'marginLeft' : 'marginTop',
+                            margin2: (horizontal) ? 'marginRight' : 'marginBottom'
+                        };
+
+                        plane = sortCtrl.plane;
+                        plane.startX = e.pageX - plane.X;
+                        plane.startY = e.pageY - plane.Y;
+
+                        $document.on('mousemove', sortCtrl.mousemove);
+                        $document.on('mouseup', sortCtrl.mouseup);
                     });
-
-                    sortCtrl.plane = {
-                        X: 0,
-                        Y: 0,
-                        startX: 0,
-                        startY: 0,
-                        orientation: (horizontal) ? 'X' : 'Y',
-                        cssProp: (horizontal) ? 'left' : 'top',
-                        offset: (horizontal) ? 'offsetLeft' : 'offsetTop',
-                        dimension: (horizontal) ? 'offsetWidth' : 'offsetHeight',
-                        margin1: (horizontal) ? 'marginLeft' : 'marginTop',
-                        margin2: (horizontal) ? 'marginRight' : 'marginBottom'
-                    };
-                    
-                    plane = sortCtrl.plane;
-                    plane.startX = e.pageX - plane.X;
-                    plane.startY = e.pageY - plane.Y;
-
-                    $document.on('mousemove', sortCtrl.mousemove);
-                    $document.on('mouseup', sortCtrl.mouseup);
                 });
             }
         };
     });
-
 }());

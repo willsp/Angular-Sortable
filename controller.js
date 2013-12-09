@@ -3,7 +3,7 @@
 (function() {
     'use strict';
 
-    var myApp = angular.module('myApp', []);
+    var myApp = angular.module('myApp', ['willsp.pwSortable']);
 
     var myCtrl = myApp.controller('myCtrl', function myCtrl($scope) {
         $scope.solarSystem = [
@@ -53,5 +53,4 @@
         });
     });
 
-    window.angularModule = myApp;
 }());

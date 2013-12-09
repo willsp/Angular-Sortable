@@ -13,7 +13,7 @@
     <p>Reorder the planets into the correct order</p>
     <p>{{incorrect}} planets in the incorrect position</p>
     <ul>
-        <li ng-repeat="planet in solarSystem" pw-sortable="solarSystem" reference="planet" pw-handle>{{planet}}</li>
+        <li ng-repeat="planet in solarSystem" pw-sortable pw-handle>{{planet}}</li>
     </ul>
     <div ng-show="incorrect === 0">
         <p>You did it!!!</p>
@@ -22,7 +22,7 @@
     <p>Reorder the letters into the correct order</p>
     <p>{{hincorrect}} letters in the incorrect position</p>
     <ul>
-        <li ng-repeat="letter in horizontal" pw-sortable="horizontal" reference="letter" pw-handle class="horizontal" direction="horizontal">{{letter}}</li>
+        <li ng-repeat="letter in horizontal" pw-sortable="horizontal" pw-handle class="horizontal">{{letter}}</li>
     </ul>
     <div ng-show="hincorrect === 0">
         <p>You did it!!!</p>
