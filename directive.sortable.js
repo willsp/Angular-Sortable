@@ -90,8 +90,6 @@
                         var phPos = [].indexOf.call(family, ph[0]);
                         var elPos = [].indexOf.call(family, $element[0]);
 
-                        elPos = (elPos > phPos) ? elPos - 1 : elPos;
-
                         cont.splice(cont.indexOf(ref), 1);
                         cont.splice(elPos, 0, ref);
                         $element.css('position', '');
@@ -121,18 +119,8 @@
                         var plane;
                         var horizontal = sortCtrl.horizontal;
                         var sortable = sortCtrl.element;
-                        var ph = sortCtrl.placeholder = sortable.clone();
+                        var ph = sortCtrl.placeholder = angular.element(document.createComment('pwSortable placeholder'));
                         sortable.after(ph);
-
-                        ph.css({
-                            border: 0,
-                            height: 0,
-                            margin: 0,
-                            overflow: 'hidden',
-                            padding: 0,
-                            visibility: 'hidden',
-                            width: 0
-                        });
 
                         sortable.css({
                             position: 'relative'
