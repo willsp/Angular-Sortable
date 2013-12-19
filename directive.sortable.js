@@ -85,7 +85,7 @@
 
                         var rmatch = rhs.match(/^([^\.\[]+)(.*)/);
                         /*jshint evil:true*/
-                        var cont = eval(repeatScope[rmatch[1]] + rmatch[2]);
+                        var cont = eval("repeatScope[rmatch[1]]" + rmatch[2]);
                         /*jshint evil:false*/
                         var ref = repeatScope[lhs];
                         var ph = me.placeholder;
