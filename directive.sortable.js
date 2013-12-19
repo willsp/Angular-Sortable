@@ -78,10 +78,7 @@
                         var lhs = match[1];
                         var rhs = match[2];
 
-                        var rmatch = rhs.match(/^([^\.\[]+)(.*)/);
-                        /*jshint evil:true*/
-                        var cont = eval("$scope[rmatch[1]]" + rmatch[2]);
-                        /*jshint evil:false*/
+                        var cont = $scope.$eval(rhs);
                         var ref = $scope[lhs];
                         var ph = me.placeholder;
 
