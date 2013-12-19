@@ -6,16 +6,18 @@
     var myApp = angular.module('myApp', ['willsp.pwSortable']);
 
     var myCtrl = myApp.controller('myCtrl', function myCtrl($scope) {
-        $scope.solarSystem = [
-            'Earth',
-            'Mars',
-            'Mercury',
-            'Jupiter',
-            'Saturn',
-            'Uranus',
-            'Neptune',
-            'Venus'
-        ];
+        $scope.solarSystem = {
+            planets: [
+                'Earth',
+                'Mars',
+                'Mercury',
+                'Jupiter',
+                'Saturn',
+                'Uranus',
+                'Neptune',
+                'Venus'
+            ]
+        };
 
         $scope.horizontal = 'JUPITER'.split('').reverse();
 
@@ -31,7 +33,7 @@
             return missed;
         }
 
-        $scope.$watchCollection('solarSystem', function() {
+        $scope.$watchCollection('solarSystem.planets', function() {
             var correct = [
                 'Mercury',
                 'Venus',
@@ -43,7 +45,7 @@
                 'Neptune'
             ];
 
-            $scope.incorrect = check($scope.solarSystem, correct);
+            $scope.incorrect = check($scope.solarSystem.planets, correct);
         });
 
         $scope.$watchCollection('horizontal', function() {

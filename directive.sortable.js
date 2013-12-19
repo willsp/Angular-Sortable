@@ -78,11 +78,15 @@
                         // Get the vars from the repeat
                         var expression = $scope.ngRepeat;
                         var match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/);
+                        var repeatScope = $scope.$parent;
 
                         var lhs = match[1];
                         var rhs = match[2];
-                        var repeatScope = $scope.$parent;
-                        var cont = repeatScope[rhs];
+
+                        var rmatch = rhs.match(/^([^\.\[]+)(.*)/);
+                        /*jshint evil:true*/
+                        var cont = eval("repeatScope[rmatch[1]]" + rmatch[2]);
+                        /*jshint evil:false*/
                         var ref = repeatScope[lhs];
                         var ph = me.placeholder;
 
