@@ -7,12 +7,8 @@
 
     .directive('pwSortable', function($document) {
         return {
-            scope: {
-                ngRepeat: '@',
-                pwSortable: '@'
-            },
-            controller: function($scope, $element) {
-                var direction = $scope.pwSortable;
+            controller: function($scope, $element, $attrs) {
+                var direction = $attrs.pwSortable;
 
                 // Not ngRepeat
                 var me = this;
@@ -76,18 +72,17 @@
                 this.mouseup = function mouseup(e) {
                     $scope.$apply(function() {
                         // Get the vars from the repeat
-                        var expression = $scope.ngRepeat;
+                        var expression = $attrs.ngRepeat;
                         var match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/);
-                        var repeatScope = $scope.$parent;
 
                         var lhs = match[1];
                         var rhs = match[2];
 
                         var rmatch = rhs.match(/^([^\.\[]+)(.*)/);
                         /*jshint evil:true*/
-                        var cont = eval("repeatScope[rmatch[1]]" + rmatch[2]);
+                        var cont = eval("$scope[rmatch[1]]" + rmatch[2]);
                         /*jshint evil:false*/
-                        var ref = repeatScope[lhs];
+                        var ref = $scope[lhs];
                         var ph = me.placeholder;
 
                         var family = $element.parent().children();
