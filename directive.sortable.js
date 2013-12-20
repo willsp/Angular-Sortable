@@ -78,12 +78,13 @@
                         var lhs = match[1];
                         var rhs = match[2];
 
-                        var cont = $scope.$eval(rhs);
+                        var cont = $scope.$parent.$parent.$eval(rhs);
+                        // Have to go up 2 levels (maybe to get passed ngRepeat scope...
+                        // even though I'm not creating an isolated scope... weird)
                         var ref = $scope[lhs];
                         var ph = me.placeholder;
 
                         var family = $element.parent().children();
-                        var phPos = [].indexOf.call(family, ph[0]);
                         var elPos = [].indexOf.call(family, $element[0]);
 
                         cont.splice(cont.indexOf(ref), 1);
