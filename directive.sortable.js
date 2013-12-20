@@ -7,6 +7,7 @@
 
     .directive('pwSortable', function($document) {
         return {
+            scope: false,
             controller: function($scope, $element, $attrs) {
                 var direction = $attrs.pwSortable;
 
@@ -78,12 +79,19 @@
                         var lhs = match[1];
                         var rhs = match[2];
 
-                        var cont = $scope.$eval(rhs);
+                        var parentScope;
                         var ref = $scope[lhs];
+                        if (ref === $scope.$parent[lhs]) {
+                            // Needed for nested for some reason... still trying to figure it out.
+                            parentScope = $scope.$parent.$parent;
+                        } else {
+                            parentScope = $scope.$parent;
+                        }
+
+                        var cont = parentScope.$eval(rhs);
                         var ph = me.placeholder;
 
                         var family = $element.parent().children();
-                        var phPos = [].indexOf.call(family, ph[0]);
                         var elPos = [].indexOf.call(family, $element[0]);
 
                         cont.splice(cont.indexOf(ref), 1);
@@ -105,8 +113,8 @@
     .directive('pwHandle', function($document) {
         return {
             require: '^pwSortable',
+            scope: false,
             link: function(scope, element, attr, sortCtrl) {
-
                 element.on('mousedown', function(e) {
                     scope.$apply(function() {
                         e.stopPropagation();
