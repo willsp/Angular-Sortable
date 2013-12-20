@@ -19,6 +19,7 @@ horizontal (any other value will just give you vertical
 * pw-handle can be assigned to the same element or a child element, this will
 be the element you "grab" onto to drag it.
 
-This directive must be used with ng-repeat. It only supports the most basic form of the statement (element in array or
-property in object), no trackBy or filters.
+This directive must be used with ng-repeat. It only supports the most basic form of the
+statement (element in array), no trackBy or filters (it doesn't really make sense for
+property in object, since they're not ordered anyway).
 
